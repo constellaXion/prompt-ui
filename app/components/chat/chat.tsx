@@ -15,6 +15,11 @@ const Chat: React.FC = () => {
   const CLI_SERVER = process.env.NEXT_PUBLIC_CLI_SERVER;
 
   useEffect(() => {
+    // Scroll to bottom when messages change
+    const chatContainer = document.querySelector(".chat-container");
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
     if (
       messages.length > 0 &&
       messages[messages.length - 1].role == "assistant" &&
@@ -80,13 +85,14 @@ const Chat: React.FC = () => {
   return (
     <div className="w-full h-full flex flex-col justify-end items-center">
       <ChatHeader />
-      {messages.length === 0 && (
-        <div className="max-w-3xl mx-auto md:mt-20 px-8 size-full flex flex-col justify-start">
-          <div className="text-2xl font-semibold">Test your model</div>
-          <div className="text-2xl text-zinc-400">Input a prompt below</div>
-        </div>
-      )}
-      <div className="flex justify-end mx-auto px-4 bg-background pb-4 md:pb-6 gap-2 h-full w-full md:max-w-3xl overflow-scroll">
+      <div className="flex justify-end mx-auto px-4 bg-background pb-4 md:pb-6 gap-2 h-full w-full md:max-w-3xl overflow-y-scroll overflow-x-hidden chat-container">
+        {messages.length === 0 && (
+          <div className="max-w-3xl mx-auto md:mt-20 px-8 size-full flex flex-col justify-start">
+            <div className="text-2xl font-semibold">Test your model</div>
+            <div className="text-2xl text-zinc-400">Input a prompt below</div>
+          </div>
+        )}
+
         {messages.length > 0 && (
           <div className="flex flex-col gap-2 w-full">
             {messages.map((message, index) => (
@@ -99,7 +105,7 @@ const Chat: React.FC = () => {
         <div className="relative w-full">
           <textarea
             rows={1}
-            className=" flex w-full border border-input px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-base bg-muted pb-10 dark:border-zinc-700"
+            className=" flex w-full border border-input px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-base bg-muted pb-10 dark:border-zinc-700 overflow-y-scroll"
             placeholder="Send a message..."
             value={message.content}
             onChange={handleChange}
